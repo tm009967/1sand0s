@@ -70,7 +70,7 @@ public class NewHighScoreActivity extends Activity {
         // Add a new document with a generated ID
         db.collection("high scores")
                 .add(highScore)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                /*.addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
@@ -81,7 +81,7 @@ public class NewHighScoreActivity extends Activity {
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error adding document", e);
                     }
-                });
+                })*/;
 
         Intent intent = new Intent(this, HighScoresActivity.class);
         this.finish();

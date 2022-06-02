@@ -85,7 +85,7 @@ public class HighScoresActivity extends Activity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                //Log.d(TAG, document.getId() + " => " + document.getData());
                                 HighScore highScore = document.toObject(HighScore.class);
                                 TableRow row = new TableRow(context);
 
@@ -115,9 +115,9 @@ public class HighScoresActivity extends Activity {
 
                                 table.addView(row);
                             }
-                        } else {
+                        } /*else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
+                        }*/
                     }
                 });
 
