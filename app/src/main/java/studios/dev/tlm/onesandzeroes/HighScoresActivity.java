@@ -1,11 +1,15 @@
 package studios.dev.tlm.onesandzeroes;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -15,16 +19,22 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import studios.dev.tlm.onesandzeroes.R;
 
 public class HighScoresActivity extends Activity {
-    private HighScores highScores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        highScores = new HighScores(this);
 
         TableLayout table = new TableLayout(this);
         TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT);
@@ -65,35 +75,51 @@ public class HighScoresActivity extends Activity {
         Typeface typeface = GameActivity.TYPEFACE;
         int color = GameActivity.LIGHT_BLUE_COLOR;
 
-        for (HighScores.HighScore highScore : highScores.getHighScoresArray()) {
-            TableRow row = new TableRow(this);
+        Context context = this;
 
-            TextView name = new TextView(this);
-            name.setText(highScore.name);
-            name.setTypeface(typeface);
-            name.setTextColor(color);
-            name.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        // get high scores
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("high scores").orderBy("score", Query.Direction.DESCENDING).limit(12).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                HighScore highScore = document.toObject(HighScore.class);
+                                TableRow row = new TableRow(context);
 
-            TextView rows = new TextView(this);
-            rows.setText(Integer.toString(highScore.numberOfRows));
-            rows.setTypeface(typeface);
-            rows.setTextColor(color);
-            rows.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-            rows.setGravity(Gravity.CENTER);
+                                TextView name = new TextView(context);
+                                name.setText(highScore.getName());
+                                name.setTypeface(typeface);
+                                name.setTextColor(color);
+                                name.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
 
-            TextView score = new TextView(this);
-            score.setText(Integer.toString(highScore.score));
-            score.setTypeface(typeface);
-            score.setTextColor(color);
-            score.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-            score.setGravity(Gravity.RIGHT);
+                                TextView rows = new TextView(context);
+                                rows.setText(Integer.toString(highScore.getNumberOfRows()));
+                                rows.setTypeface(typeface);
+                                rows.setTextColor(color);
+                                rows.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                                rows.setGravity(Gravity.CENTER);
 
-            row.addView(name);
-            row.addView(rows);
-            row.addView(score);
+                                TextView score = new TextView(context);
+                                score.setText(Integer.toString(highScore.getScore()));
+                                score.setTypeface(typeface);
+                                score.setTextColor(color);
+                                score.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                                score.setGravity(Gravity.RIGHT);
 
-            table.addView(row);
-        }
+                                row.addView(name);
+                                row.addView(rows);
+                                row.addView(score);
+
+                                table.addView(row);
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
         setContentView(table);
     }
@@ -106,25 +132,26 @@ public class HighScoresActivity extends Activity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        boolean isConfirmed = false;
-        if (id == R.id.reset_high_scores) {new AlertDialog.Builder(this)
-                .setTitle("Confirm Reset")
-                .setMessage("Do you really want to reset the high scores?")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        highScores.resetHighScores();
-                        HighScoresActivity.this.recreate();
-                    }})
-                .setNegativeButton(android.R.string.no, null).show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//        boolean isConfirmed = false;
+//        if (id == R.id.reset_high_scores) {new AlertDialog.Builder(this)
+//                .setTitle("Confirm Reset")
+//                .setMessage("Do you really want to reset the high scores?")
+//                .setIcon(android.R.drawable.ic_dialog_alert)
+//                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+////                        TODO
+////                        highScores.resetHighScores();
+////                        HighScoresActivity.this.recreate();
+//                    }})
+//                .setNegativeButton(android.R.string.no, null).show();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }

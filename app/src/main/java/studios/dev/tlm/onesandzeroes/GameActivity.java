@@ -47,8 +47,6 @@ public class GameActivity extends Activity {
     private Button button0;
     private Button buttonGo;
 
-    private HighScores highScores;
-
     private int level;
     private int score;
     private Stack<Address> askStack = new Stack<Address>();
@@ -57,8 +55,6 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        highScores = new HighScores(this);
 
         // Create the toast for "double-back" exiting
         Context context = getApplicationContext();
@@ -69,8 +65,6 @@ public class GameActivity extends Activity {
         // Get game options from the intent (number of rows)
         Intent intent = getIntent();
         int numberOfRows = intent.getIntExtra(EXTRA_NUMBER_OF_ROWS, 0);
-
-        highScores = new HighScores(this);
 
         // Get size of screen
         Display display = getWindowManager().getDefaultDisplay();
@@ -386,7 +380,7 @@ public class GameActivity extends Activity {
     }
 
     public void gameOver() {
-        if (highScores.isNewHighScore(score)) {
+        if (true) {
             Intent intent = new Intent(this, NewHighScoreActivity.class);
             intent.putExtra(EXTRA_NUMBER_OF_ROWS, gameboard.numberOfRows);
             intent.putExtra(EXTRA_SCORE, score);

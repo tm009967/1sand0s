@@ -1,8 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="studios.dev.tlm.onesandzeroes.HighScoresActivity" >
-    <item android:id="@+id/reset_high_scores"
-        android:title="Reset High Scores"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+<!--    <item android:id="@+id/next_page"-->
+<!--        android:title="Next Page"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:showAsAction="never" />-->
+<!--    <item android:id="@+id/prev_page"-->
+<!--        android:title="Prev Page"-->
+<!--        android:orderInCategory="200"-->
+<!--        android:showAsAction="never" />-->
 </menu>
