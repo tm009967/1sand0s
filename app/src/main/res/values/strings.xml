@@ -11,9 +11,9 @@
     <string name="name_heading">Name</string>
     <string name="rows_heading">Rows</string>
     <string name="score_heading">Score</string>
-    <string name="title_activity_new_high_score">New High Score!</string>
+    <string name="title_activity_new_high_score">Send High Score!</string>
     <string name="button_submit">Submit</string>
-    <string name="enter_your_name">Enter your name:</string>
+    <string name="enter_your_name">Name for the high score:</string>
     <string name="Name">Name</string>
     <string name="game_title">1\'s and 0\'s</string>
 
